@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:searchbar_animation/searchbar_animation.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 
 import '../constant.dart';
 
@@ -48,6 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 SizedBox(width: 20.0),
                 Text('تراکنش ها'),
+                Spacer(),
+                SvgPicture.asset('assets/images/empty.svg')
 
               ],
             ),

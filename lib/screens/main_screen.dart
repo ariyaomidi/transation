@@ -1,5 +1,6 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:transation/screens/info_screen.dart';
 
 import 'home_screen.dart';
 
@@ -29,7 +30,7 @@ class _MainScreenState extends State<MainScreen> {
             body=HomeScreen();
           }
           else{
-            body=const Center(child:Text('info'));
+            body=const InfoScreen();
           }
 
 
