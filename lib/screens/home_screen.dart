@@ -114,7 +114,7 @@ class EmptyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return  Column(
       children: [
-        SvgPicture.asset('assets/images/empty.svg',height: 200,),
+        SvgPicture.asset('assets/images/empty.svg',),
         Text('تراکنشی وجود ندارد'),
       ],
     );
