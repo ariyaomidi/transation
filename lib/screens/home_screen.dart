@@ -1,12 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:searchbar_animation/searchbar_animation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transation/screens/add_transaction.dart';
 
 import '../constant.dart';
+import '../models/money.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+// بخاطر دسترسی سریع از کلمه کلیدی استاتیک استفاده میکنیم
+// ولی اگه از کلمه کلیدی استاتیک استفاده نکنیم باید جهت دسترسی به متغیر مانی از شبیه زیر استفاده کنیم
+// Homescreen().money[index].title
+//ولی با کلمه کلیدی استاتیک به صورت زیر مینویسیم
+//Homescreen.Money[index].title
+//تفاوت را دقت کنیم
+  List<Money> money = [
+    Money(
+        id: 0,
+        title: 'Gym',
+        price: '125,000',
+        date: '1401/05/07',
+        isReceived: false),
+    Money(
+        id: 1,
+        title: 'Hotel',
+        price: '125,000',
+        date: '1401/05/07',
+        isReceived: false),
+    Money(
+        id: 2,
+        title: 'Teach',
+        price: '125,000',
+        date: '1401/05/07',
+        isReceived: true),
+    Money(
+        id: 3,
+        title: 'Gym',
+        price: '125,000',
+        date: '1401/05/07',
+        isReceived: false),
+    Money(
+        id: 4,
+        title: 'Hotel',
+        price: '125,000',
+        date: '1401/05/07',
+        isReceived: false),
+    Money(
+        id: 5,
+        title: 'Snap',
+        price: '125,000',
+        date: '1401/05/07',
+        isReceived: true),
+  ];
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -31,15 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const AddTransaction()));
-          },
-          backgroundColor: kPurpleColor,
-          elevation: 0,
-          child: const Icon(Icons.add),
-        ),
+        floatingActionButton: fab() ,
         body: Container(
           width: double.infinity,
           child: Column(
@@ -56,26 +93,71 @@ class _HomeScreenState extends State<HomeScreen> {
               // Spacer(),
               // EmptyWidget(),
 
-              ListView.builder(itemBuilder: (context, index) {
-                return const MyListTileWidget();
-              },itemCount: 10,),
+              Expanded(
+                child: ListView.builder(
+                  itemBuilder: (context, index) {
+                    return MyListTileWidget(index: index);
+                  },
+                  itemCount: HomeScreen().money.length,
+                ),
+              ),
 
-
-              const Spacer(),
+              // const Spacer(),
             ],
           ),
         ),
       ),
     );
+
+
+    }
+  Widget fab(){
+    return
+      FloatingActionButton(
+        onPressed: () {
+          AddTransaction.groupId=0;
+          AddTransaction.priceController.text = '';
+          AddTransaction.titleController.text = '';
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>  AddTransaction())).then((value) {
+                    setState(() {
+                      print('Refresh');
+                    });
+          });
+        },
+        backgroundColor: kPurpleColor,
+        elevation: 0,
+        child: const Icon(Icons.add),
+      );
   }
+
+// این دوتا متود باز نویسی شده جهت عمودی کردن صفحه برنامه که حتما باید کلاس سرویسز های فایل دارت هم باید امپورت کرد
+// @override
+// void initState() {
+//   super.initState();
+//   SystemChrome.setPreferredOrientations([
+//     DeviceOrientation.portraitUp,
+//     DeviceOrientation.landscapeRight,
+//     DeviceOrientation.landscapeLeft
+//   ]);
+// }
+//
+//   @override
+//   void dispose() {
+//     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+//     super.dispose();
+//   }
+
 }
 
 // my List tile widget
 
 class MyListTileWidget extends StatelessWidget {
-  const MyListTileWidget({
-    Key? key,
-  }) : super(key: key);
+  final int index;
+
+  const MyListTileWidget({super.key, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -88,27 +170,46 @@ class MyListTileWidget extends StatelessWidget {
             height: 50,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Colors.red),
-            child: const Icon(
-              Icons.arrow_downward,
+                color: HomeScreen().money[index].isReceived
+                    ? kGreenColor
+                    : kRedColor),
+            child: Icon(
+              HomeScreen().money[index].isReceived
+                  ? Icons.arrow_downward
+                  : Icons.arrow_upward,
               color: Colors.white,
             ),
           ),
           const Spacer(flex: 1),
-          const Text('Gym'),
+          Text(HomeScreen().money[index].title),
           const Spacer(flex: 30),
           Column(
             children: [
               Row(
-                children: const [
-                  Text('تومان'),
-                  SizedBox(
-                    width: 5,
+                children: [
+                  Text(
+                    'تومان',
+                    style: TextStyle(
+                        color: HomeScreen().money[index].isReceived
+                            ? kGreenColor
+                            : kRedColor),
                   ),
-                  Text('10,000'),
+                  SizedBox(
+                    width: 7,
+                  ),
+                  Text(HomeScreen().money[index].isReceived ? '+' : '-',
+                      style: TextStyle(
+                          color: HomeScreen().money[index].isReceived
+                              ? kGreenColor
+                              : kRedColor)),
+                  Text(HomeScreen().money[index].price,
+                      style: TextStyle(
+                          color: HomeScreen().money[index].isReceived
+                              ? kGreenColor
+                              : kRedColor)),
                 ],
               ),
-              const Text('1401/02/03')
+              Text(HomeScreen().money[index].date)
             ],
           )
         ],

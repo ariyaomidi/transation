@@ -1,8 +1,16 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:transation/constant.dart';
+import 'package:transation/models/money.dart';
+import 'package:transation/screens/home_screen.dart';
 
 class AddTransaction extends StatefulWidget {
   const AddTransaction({Key? key}) : super(key: key);
+
+  static int groupId = 0;
+  static TextEditingController titleController = TextEditingController();
+  static TextEditingController priceController = TextEditingController();
 
   @override
   State<AddTransaction> createState() => _AddTransactionState();
@@ -18,46 +26,60 @@ class _AddTransactionState extends State<AddTransaction> {
         child: Column(
           children: [
             const Text('تراکنش جدید'),
-            Spacer(),
-            const TextField(
-                textAlign: TextAlign.end,
-                decoration: InputDecoration(
-                contentPadding: EdgeInsets.all(5),
-                hintText: "عنوان ",)
-            ),
-            Spacer(),
-            const TextField(
-                textAlign: TextAlign.end,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(5),
-                  hintText: "مبلغ",)
-            ),
-            Spacer(flex: 2),
+            const Spacer(),
+            MyTexField(
+                hintText: 'توضیحات',
+                controller: AddTransaction.titleController),
+            const Spacer(),
+            MyTexField(
+                hintText: 'مبلغ', controller: AddTransaction.titleController),
+            const Spacer(flex: 2),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Spacer(flex: 8),
+                const Spacer(flex: 8),
                 Radio(
-                  value: 0,
-                  groupValue: 1,
-                  onChanged: (value) {},
-                ),
-                Text('دریافتی'),
-                Spacer(flex: 2),
-                Radio(
+                  activeColor: kPurpleColor,
                   value: 1,
-                  groupValue: 1,
-                  onChanged: (value) {},
+                  groupValue: AddTransaction.groupId,
+                  onChanged: (value) {
+                    setState(() => AddTransaction.groupId = value.hashCode);
+                  },
                 ),
-                Text('پرداختی'),
-                Spacer(flex: 7),
-                TextButton(onPressed: () {}, child: Text('تاریخ'))
+                const Text('دریافتی'),
+                const Spacer(flex: 2),
+                Radio(
+                  activeColor: kPurpleColor,
+                  value: 2,
+                  groupValue: AddTransaction.groupId,
+                  onChanged: (value) {
+                    setState(() => AddTransaction.groupId = value.hashCode);
+                  },
+                ),
+                const Text('پرداختی'),
+                const Spacer(flex: 7),
+                TextButton(onPressed: () {}, child: const Text('تاریخ'))
               ],
             ),
-            Spacer(flex: 2),
-            MyButton(onPressed: (){},text: 'اضافه کردن'),
-
-            Spacer(flex: 16,)
+            const Spacer(flex: 2),
+            MyButton(
+                onPressed: () {
+                  HomeScreen().money.add(
+                        Money(
+                            id: Random().nextInt(9999),
+                            // title: AddTransaction.titleController.text,
+                            title: '555555',
+                            price: AddTransaction.priceController.text,
+                            date: '1402/06/08',
+                            isReceived:
+                                AddTransaction.groupId == 1 ? true : false),
+                      );
+                  Navigator.pop(context);
+                },
+                text: 'اضافه کردن'),
+            const Spacer(
+              flex: 16,
+            )
           ],
         ),
       ),
@@ -65,20 +87,36 @@ class _AddTransactionState extends State<AddTransaction> {
   }
 }
 
+class MyTexField extends StatelessWidget {
+  final String hintText;
+  final TextEditingController controller;
+
+  const MyTexField(
+      {super.key, required this.hintText, required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return const TextField(
+        textAlign: TextAlign.end,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.all(5),
+          hintText: "عنوان ",
+        ));
+  }
+}
+
 class MyButton extends StatelessWidget {
-final String text;
-final Function() onPressed;
+  final String text;
+  final Function() onPressed;
 
   const MyButton({super.key, required this.text, required this.onPressed});
-
-
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed:onPressed,
+        onPressed: onPressed,
         style: TextButton.styleFrom(backgroundColor: kPurpleColor),
         child: Text(text),
       ),
