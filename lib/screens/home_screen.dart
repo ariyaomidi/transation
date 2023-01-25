@@ -14,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 //ولی با کلمه کلیدی استاتیک به صورت زیر مینویسیم
 //Homescreen.Money[index].title
 //تفاوت را دقت کنیم
-  List<Money> money = [
+  static List<Money> money = [
     Money(
         id: 0,
         title: 'Gym',
@@ -52,6 +52,8 @@ class HomeScreen extends StatefulWidget {
         date: '1401/05/07',
         isReceived: true),
   ];
+
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -95,10 +97,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
               Expanded(
                 child: ListView.builder(
+
                   itemBuilder: (context, index) {
                     return MyListTileWidget(index: index);
                   },
-                  itemCount: HomeScreen().money.length,
+                  itemCount: HomeScreen.money.length,
                 ),
               ),
 
@@ -170,18 +173,18 @@ class MyListTileWidget extends StatelessWidget {
             height: 50,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: HomeScreen().money[index].isReceived
+                color: HomeScreen.money[index].isReceived
                     ? kGreenColor
                     : kRedColor),
             child: Icon(
-              HomeScreen().money[index].isReceived
+              HomeScreen.money[index].isReceived
                   ? Icons.arrow_downward
                   : Icons.arrow_upward,
               color: Colors.white,
             ),
           ),
           const Spacer(flex: 1),
-          Text(HomeScreen().money[index].title),
+          Text(HomeScreen.money[index].title),
           const Spacer(flex: 30),
           Column(
             children: [
@@ -190,26 +193,26 @@ class MyListTileWidget extends StatelessWidget {
                   Text(
                     'تومان',
                     style: TextStyle(
-                        color: HomeScreen().money[index].isReceived
+                        color: HomeScreen.money[index].isReceived
                             ? kGreenColor
                             : kRedColor),
                   ),
                   SizedBox(
                     width: 7,
                   ),
-                  Text(HomeScreen().money[index].isReceived ? '+' : '-',
+                  Text(HomeScreen.money[index].isReceived ? '+' : '-',
                       style: TextStyle(
-                          color: HomeScreen().money[index].isReceived
+                          color: HomeScreen.money[index].isReceived
                               ? kGreenColor
                               : kRedColor)),
-                  Text(HomeScreen().money[index].price,
+                  Text(HomeScreen.money[index].price,
                       style: TextStyle(
-                          color: HomeScreen().money[index].isReceived
+                          color: HomeScreen.money[index].isReceived
                               ? kGreenColor
                               : kRedColor)),
                 ],
               ),
-              Text(HomeScreen().money[index].date)
+              Text(HomeScreen.money[index].date)
             ],
           )
         ],

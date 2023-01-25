@@ -28,11 +28,11 @@ class _AddTransactionState extends State<AddTransaction> {
             const Text('تراکنش جدید'),
             const Spacer(),
             MyTexField(
-                hintText: 'توضیحات',
+                hintText: 'عنوان',
                 controller: AddTransaction.titleController),
             const Spacer(),
             MyTexField(
-                hintText: 'مبلغ', controller: AddTransaction.titleController),
+                hintText: 'مبلغ', controller: AddTransaction.priceController),
             const Spacer(flex: 2),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -64,12 +64,13 @@ class _AddTransactionState extends State<AddTransaction> {
             const Spacer(flex: 2),
             MyButton(
                 onPressed: () {
-                  HomeScreen().money.add(
+                  HomeScreen.money.add(
                         Money(
                             id: Random().nextInt(9999),
-                            // title: AddTransaction.titleController.text,
-                            title: '555555',
+                            title: AddTransaction.titleController.text,
+
                             price: AddTransaction.priceController.text,
+
                             date: '1402/06/08',
                             isReceived:
                                 AddTransaction.groupId == 1 ? true : false),
@@ -88,19 +89,20 @@ class _AddTransactionState extends State<AddTransaction> {
 }
 
 class MyTexField extends StatelessWidget {
-  final String hintText;
-  final TextEditingController controller;
+   final String hintText;
+   final TextEditingController controller;
 
-  const MyTexField(
+   const MyTexField(
       {super.key, required this.hintText, required this.controller});
 
   @override
   Widget build(BuildContext context) {
-    return const TextField(
+    return  TextField(
+      controller:controller,
         textAlign: TextAlign.end,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.all(5),
-          hintText: "عنوان ",
+          contentPadding: const EdgeInsets.all(5),
+          hintText: hintText,
         ));
   }
 }
