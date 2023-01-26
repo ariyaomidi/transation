@@ -25,7 +25,7 @@ class _AddTransactionState extends State<AddTransaction> {
         padding: const EdgeInsets.all(18.0),
         child: Column(
           children: [
-            const Text('تراکنش جدید'),
+             Text(HomeScreen.isEditing?'ویرایش تراکنش ':'تراکنش جدید'),
             const Spacer(),
             MyTexField(
                 hintText: 'عنوان',
@@ -64,20 +64,15 @@ class _AddTransactionState extends State<AddTransaction> {
             const Spacer(flex: 2),
             MyButton(
                 onPressed: () {
-                  HomeScreen.money.add(
-                        Money(
-                            id: Random().nextInt(9999),
-                            title: AddTransaction.titleController.text,
+                  HomeScreen.isEditing ? editTransaction() :
+                  addTransaction();
 
-                            price: AddTransaction.priceController.text,
+                  // HomeScreen.isEditing ? print('درحال ویرایش') :
+                  // print('افزودن');
 
-                            date: '1402/06/08',
-                            isReceived:
-                                AddTransaction.groupId == 1 ? true : false),
-                      );
                   Navigator.pop(context);
                 },
-                text: 'اضافه کردن'),
+                text: HomeScreen.isEditing?'ویرایش کردن':'اضافه کردن'),
             const Spacer(
               flex: 16,
             )
@@ -86,6 +81,39 @@ class _AddTransactionState extends State<AddTransaction> {
       ),
     ));
   }
+
+  void addTransaction(){
+    HomeScreen.money.add(
+      Money(
+          id: Random().nextInt(9999),
+          title: AddTransaction.titleController.text,
+
+          price: AddTransaction.priceController.text,
+
+          date: '1402/06/08',
+          isReceived:
+          AddTransaction.groupId == 1 ? true : false),
+
+    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(
+        content: Row(
+          children: [
+        TextButton(onPressed: () {}, child: const Text(' ')),
+        const Spacer(),
+        const Text('اضافه شد'),
+      ],
+        )));
+    print('اضافه شد');
+  }
+  void editTransaction(){
+    HomeScreen.money[HomeScreen.indexEditing].title = AddTransaction.titleController.text;
+    HomeScreen.money[HomeScreen.indexEditing].price = AddTransaction.priceController.text;
+    HomeScreen.money[HomeScreen.indexEditing].isReceived =AddTransaction.groupId==1?true:false;
+    print(' ویرایش شد');
+    // HomeScreen.money[HomeScreen.indexEditing].isReceived = AddTransaction.groupId == 1 ? true : false;
+  }
+
 }
 
 class MyTexField extends StatelessWidget {

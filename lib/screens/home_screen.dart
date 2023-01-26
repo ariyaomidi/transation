@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:searchbar_animation/searchbar_animation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transation/screens/add_transaction.dart';
@@ -14,44 +14,11 @@ class HomeScreen extends StatefulWidget {
 //ولی با کلمه کلیدی استاتیک به صورت زیر مینویسیم
 //Homescreen.Money[index].title
 //تفاوت را دقت کنیم
-  static List<Money> money = [
-    Money(
-        id: 0,
-        title: 'Gym',
-        price: '125,000',
-        date: '1401/05/07',
-        isReceived: false),
-    Money(
-        id: 1,
-        title: 'Hotel',
-        price: '125,000',
-        date: '1401/05/07',
-        isReceived: false),
-    Money(
-        id: 2,
-        title: 'Teach',
-        price: '125,000',
-        date: '1401/05/07',
-        isReceived: true),
-    Money(
-        id: 3,
-        title: 'Gym',
-        price: '125,000',
-        date: '1401/05/07',
-        isReceived: false),
-    Money(
-        id: 4,
-        title: 'Hotel',
-        price: '125,000',
-        date: '1401/05/07',
-        isReceived: false),
-    Money(
-        id: 5,
-        title: 'Snap',
-        price: '125,000',
-        date: '1401/05/07',
-        isReceived: true),
-  ];
+  static List<Money> money = [];
+
+  static bool isEditing = false;
+
+  static int indexEditing = 0;
 
   const HomeScreen({super.key});
 
@@ -78,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        floatingActionButton: fab() ,
+        floatingActionButton: fab(),
         body: Container(
           width: double.infinity,
           child: Column(
@@ -92,63 +59,109 @@ class _HomeScreenState extends State<HomeScreen> {
                     secondaryButtonWidget: secondaryButtonWidget,
                     buttonWidget: buttonWidget),
               ),
-              // Spacer(),
-              // EmptyWidget(),
+
+
 
               Expanded(
-                child: ListView.builder(
-
+                child: HomeScreen.money.isEmpty?
+                Column(
+                  children:const [
+                    Spacer(),
+                    EmptyWidget(),
+                    Spacer(),
+                  ],
+                ):ListView.builder(
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       child: MyListTileWidget(index: index),
-                      onLongPress: (){
-                        AlertDialog(
-                          title: Text('آیا از حذف این مورد مطمئن هستید؟',style: TextStyle(fontSize: 20),),
-                          actionsAlignment:MainAxisAlignment.spaceBetween,
-                          actions: [
-                          TextButton(onPressed: (){}, child: const Text('خیر')),
-                            TextButton(onPressed: (){}, child: const Text('بله')),
-                        ]
-                          ,);
-                        setState(() {
-                          HomeScreen.money.removeAt(index);
-                        });
+
+                      //Edite
+                      onTap: (){
+                        HomeScreen.isEditing = true;
+
+                        AddTransaction.titleController.text=HomeScreen.money[index].title;
+                        AddTransaction.priceController.text=HomeScreen.money[index].price;
+                        AddTransaction.groupId = HomeScreen.money[index].isReceived?1:2;
+
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>
+                        const AddTransaction(),),).then((value) {
+                          setState(() {
+                            print('فراخوانی متد ست استیت بعد از ویرایش');
+                          });
+                        });;
+                      },
+
+                      //Delete
+                      onLongPress: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title:const Text(
+                              'آیا از حذف این مورد مطمئن هستید؟',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            actionsAlignment: MainAxisAlignment.spaceBetween,
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('خیر')),
+                              TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      HomeScreen.money.removeAt(index);
+                                    });
+                                    Navigator.pop(context);
+
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                        content: Row(
+                                          children: [
+                                            Text('حذف شد'),
+                                            Spacer(),
+                                            TextButton(
+                                                onPressed: () {},
+                                                child: const Text('برگرداندن'))
+                                          ],
+                                        )));
+                                  },
+                                  child: const Text('بله')),
+                            ],
+                          ),
+                        );
                       },
                     );
                   },
                   itemCount: HomeScreen.money.length,
-                ),
-              ),
-
-              // const Spacer(),
+                )
+              )
             ],
           ),
         ),
       ),
     );
+  }
 
-
-    }
-  Widget fab(){
-    return
-      FloatingActionButton(
-        onPressed: () {
-          AddTransaction.groupId=0;
-          AddTransaction.priceController.text = '';
-          AddTransaction.titleController.text = '';
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>  AddTransaction())).then((value) {
-                    setState(() {
-                      print('Refresh');
-                    });
+  Widget fab() {
+    return FloatingActionButton(
+      onPressed: () {
+        HomeScreen.isEditing = false;
+        AddTransaction.groupId = 0;
+        AddTransaction.priceController.text = '';
+        AddTransaction.titleController.text = '';
+        Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const AddTransaction()))
+            .then((value) {
+          setState(() {
+            print('فراخوانی متد ست استیت بعد از اضافه کردن تراکنش');
           });
-        },
-        backgroundColor: kPurpleColor,
-        elevation: 0,
-        child: const Icon(Icons.add),
-      );
+        });
+      },
+      backgroundColor: kPurpleColor,
+      elevation: 0,
+      child: const Icon(Icons.add),
+    );
   }
 
 // این دوتا متود باز نویسی شده جهت عمودی کردن صفحه برنامه که حتما باید کلاس سرویسز های فایل دارت هم باید امپورت کرد
