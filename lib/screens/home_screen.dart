@@ -99,7 +99,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ListView.builder(
 
                   itemBuilder: (context, index) {
-                    return MyListTileWidget(index: index);
+                    return GestureDetector(
+                      child: MyListTileWidget(index: index),
+                      onLongPress: (){
+                        AlertDialog(
+                          title: Text('آیا از حذف این مورد مطمئن هستید؟',style: TextStyle(fontSize: 20),),
+                          actionsAlignment:MainAxisAlignment.spaceBetween,
+                          actions: [
+                          TextButton(onPressed: (){}, child: const Text('خیر')),
+                            TextButton(onPressed: (){}, child: const Text('بله')),
+                        ]
+                          ,);
+                        setState(() {
+                          HomeScreen.money.removeAt(index);
+                        });
+                      },
+                    );
                   },
                   itemCount: HomeScreen.money.length,
                 ),
