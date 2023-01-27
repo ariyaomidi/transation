@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:transation/constant.dart';
 import 'package:transation/models/money.dart';
 import 'package:transation/screens/home_screen.dart';
@@ -17,6 +18,9 @@ class AddTransaction extends StatefulWidget {
 }
 
 class _AddTransactionState extends State<AddTransaction> {
+
+  Box<Money> hiveBox = Hive.box<Money>('MoneyBox');
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -71,8 +75,8 @@ class _AddTransactionState extends State<AddTransaction> {
                       isReceived: AddTransaction.groupId == 1 ? true : false);
 
                   HomeScreen.isEditing
-                      ? HomeScreen.money[HomeScreen.indexEditing] = item
-                      :HomeScreen.money.add(item) ;
+                      ? hiveBox.putAt(HomeScreen.indexEditing, item)
+                      :hiveBox.add(item) ;
 
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Row(
