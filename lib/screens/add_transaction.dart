@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:transation/constant.dart';
+import 'package:transation/main.dart';
 import 'package:transation/models/money.dart';
 import 'package:transation/screens/home_screen.dart';
 
@@ -68,14 +69,26 @@ class _AddTransactionState extends State<AddTransaction> {
             MyButton(
                 onPressed: () {
                   Money item = Money(
-                      id: Random().nextInt(9999),
+                      id:HomeScreen.isEditing?HomeScreen.idEdit: Random().nextInt(9999),
                       title: AddTransaction.titleController.text,
                       price: AddTransaction.priceController.text,
                       date: '1402/06/08',
                       isReceived: AddTransaction.groupId == 1 ? true : false);
 
+
+                  int index= 0;
+                  MyApp.getData();
+                  for(int i=0; i < hiveBox.values.length;i++)
+                    {
+
+                      if (hiveBox.values.elementAt(i).id== HomeScreen.idEdit) {
+                        index = i;
+                      }
+
+                    }
+
                   HomeScreen.isEditing
-                      ? hiveBox.putAt(HomeScreen.indexEditing, item)
+                      ? hiveBox.putAt(index, item)
                       :hiveBox.add(item) ;
 
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(

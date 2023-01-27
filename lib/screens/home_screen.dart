@@ -15,6 +15,8 @@ class HomeScreen extends StatefulWidget {
 
   static int indexEditing = 0;
 
+  static int idEdit = 0;
+
   const HomeScreen({super.key});
 
   @override
@@ -23,31 +25,22 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Box<Money> hiveBox = Hive.box<Money>('MoneyBox');
+  TextEditingController searchController = TextEditingController();
+  bool isSearch =false;
 
-  // این چند تا get ها همگی به ورت اجباری و پیشفرض به ویجت سرچ ابار انیمیشن اضافه میشه
 
-  get textEditingController => textEditingController();
-
-  get secondaryButtonWidget => const Icon(Icons.close);
-
-  get trailingWidget => const Icon(Icons.search);
-
-  get isOriginalAnimation => false;
-
-  get buttonWidget => const Icon(Icons.search);
-
-  get onFieldSubmitted => (String text) {
-    List<Money> result = hiveBox.values
-        .where((element) =>
-    element.title.contains(text) ||
-        element.date.contains(text))
-        .toList();
-    HomeScreen.money.clear();
-    setState(() {
-      for (var value in result) {
-        HomeScreen.money.add(value);
-      }});
-  };
+  // get onFieldSubmitted => (String text) {
+  //   List<Money> result = hiveBox.values
+  //       .where((element) =>
+  //   element.title.contains(text) ||
+  //       element.date.contains(text))
+  //       .toList();
+  //   HomeScreen.money.clear();
+  //   setState(() {
+  //     for (var value in result) {
+  //       HomeScreen.money.add(value);
+  //     }});
+  // };
 
   //******************************
 
@@ -68,14 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: HeaderWidget(
-                  textEditingController: textEditingController,
-                  isOriginalAnimation: isOriginalAnimation,
-                  trailingWidget: trailingWidget,
-                  secondaryButtonWidget: secondaryButtonWidget,
-                  buttonWidget: buttonWidget,
-                  onFieldSubmitted: onFieldSubmitted,
-                ),
+                child:myAppBar()
               ),
               Expanded(
                   child: HomeScreen.money.isEmpty
@@ -94,6 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               //Edite
                               onTap: () {
                                 HomeScreen.isEditing = true;
+                                HomeScreen.idEdit = HomeScreen.money[index].id;
                                 HomeScreen.indexEditing = index;
 
                                 AddTransaction.titleController.text =
@@ -195,6 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
             .then((value) {
           setState(() {
             MyApp.getData();
+
             print('فراخوانی متد ست استیت بعد از اضافه کردن تراکنش');
           });
         });
@@ -204,6 +192,69 @@ class _HomeScreenState extends State<HomeScreen> {
       child: const Icon(Icons.add),
     );
   }
+
+  Widget myAppBar(){
+   return  Row(
+     children: [
+       Expanded(
+         child: SearchBarAnimation(
+
+           hintText: 'جست و جو کنید',
+           buttonWidget: const Icon(Icons.search),
+           textEditingController: searchController,
+           isOriginalAnimation: false,
+           secondaryButtonWidget: const Icon(Icons.close),
+           enableKeyboardFocus: true,
+           onSaved: (){
+             print('onSaveeeee');
+           },
+           onExpansionComplete: (){
+             print('onExpansionCompleteeeee');
+           },
+           // onPressButton: (v){
+           //   print('open search bar');
+           // },
+           trailingWidget:const Icon(Icons.search),
+
+           onCollapseComplete: (){
+
+             searchController.text='';
+             HomeScreen.money.clear();
+             setState(() {
+              for (var value in hiveBox.values) {
+                HomeScreen.money.add(value);
+              }
+             });
+
+             print('onColoapseCompleteeeee');
+           },
+           onFieldSubmitted: (String text){
+             print('pnfieldSubmitted');
+
+           },
+           onChanged:  (String text){
+             List<Money> result = hiveBox.values.where((value) => value.title.contains(text)).toList();
+
+             HomeScreen.money.clear();
+             setState(() {
+               for (var value in result) {
+                  HomeScreen.money.add(value);
+                }
+              });
+
+           },
+
+
+         ),
+       ),
+
+       const SizedBox(width: 20.0),
+       const Text('تراکنش ها'),
+       // Spacer(),
+     ],
+   );
+  }
+
 }
 
 // my List tile widget
@@ -241,6 +292,11 @@ class MyListTileWidget extends StatelessWidget {
             children: [
               Row(
                 children: [
+
+                  Text(HomeScreen.money[index].id.toString()),
+                  SizedBox(width: 20,),
+
+
                   Text(
                     'تومان',
                     style: TextStyle(
@@ -275,23 +331,8 @@ class MyListTileWidget extends StatelessWidget {
 //Header Widget
 
 class HeaderWidget extends StatelessWidget {
-  const HeaderWidget({
-    Key? key,
-    required this.textEditingController,
-    required this.isOriginalAnimation,
-    required this.trailingWidget,
-    required this.secondaryButtonWidget,
-    required this.buttonWidget,
-    required this.onFieldSubmitted,
-  }) : super(key: key);
-
-  final textEditingController;
-  final isOriginalAnimation;
-  final trailingWidget;
-  final secondaryButtonWidget;
-  final buttonWidget;
-
-  final onFieldSubmitted;
+  TextEditingController searchController = TextEditingController();
+  Box<Money> hiveBox = Hive.box('moneyBox');
 
   @override
   Widget build(BuildContext context) {
@@ -300,19 +341,29 @@ class HeaderWidget extends StatelessWidget {
         Expanded(
           child: SearchBarAnimation(
 
-            textEditingController: textEditingController,
-            isOriginalAnimation: isOriginalAnimation,
-            trailingWidget: trailingWidget,
-            secondaryButtonWidget: secondaryButtonWidget,
-            buttonWidget: buttonWidget,
-            onFieldSubmitted: onFieldSubmitted,
-            onChanged: onFieldSubmitted,
-
-            onCollapseComplete:(){
-              MyApp.getData();
-              ser
-            } ,
             hintText: 'جست و جو کنید',
+            buttonWidget: const Icon(Icons.search),
+            textEditingController: searchController,
+            isOriginalAnimation: false,
+            secondaryButtonWidget: const Icon(Icons.close),
+            trailingWidget:const Icon(Icons.search),
+            onFieldSubmitted: (String text){
+              List<Money> result = hiveBox.values.where((value) => value.title.contains(text)).toList();
+              print(result[0].title);
+
+            },
+            onChanged:  (String text){
+              List<Money> result = hiveBox.values.where((value) => value.title.contains(text)).toList();
+
+              HomeScreen.money.clear();
+
+              for (var value in result) {
+                HomeScreen.money.add(value);
+              }
+              print(result[0].title);
+            },
+
+
           ),
         ),
 
