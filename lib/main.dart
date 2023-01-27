@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:transation/screens/main_screen.dart';
 
-void main() {
+void main() async {
 
 
   // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
   //     .then((_) {
   //   runApp(MyApp());
   // });
+
+await Hive.initFlutter();
 
 
   runApp(const MyApp());

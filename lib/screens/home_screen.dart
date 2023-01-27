@@ -8,12 +8,7 @@ import '../constant.dart';
 import '../models/money.dart';
 
 class HomeScreen extends StatefulWidget {
-// بخاطر دسترسی سریع از کلمه کلیدی استاتیک استفاده میکنیم
-// ولی اگه از کلمه کلیدی استاتیک استفاده نکنیم باید جهت دسترسی به متغیر مانی از شبیه زیر استفاده کنیم
-// Homescreen().money[index].title
-//ولی با کلمه کلیدی استاتیک به صورت زیر مینویسیم
-//Homescreen.Money[index].title
-//تفاوت را دقت کنیم
+
   static List<Money> money = [];
 
   static bool isEditing = false;
@@ -78,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       //Edite
                       onTap: (){
                         HomeScreen.isEditing = true;
+                        HomeScreen.indexEditing = index;
 
                         AddTransaction.titleController.text=HomeScreen.money[index].title;
                         AddTransaction.priceController.text=HomeScreen.money[index].price;
