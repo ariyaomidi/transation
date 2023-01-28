@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:transation/constant.dart';
 import 'package:transation/main.dart';
 import 'package:transation/models/money.dart';
@@ -13,6 +14,9 @@ class AddTransaction extends StatefulWidget {
   static int groupId = 0;
   static TextEditingController titleController = TextEditingController();
   static TextEditingController priceController = TextEditingController();
+
+  static String setDate = 'تاریخی تنظیم نشده';
+  static bool isPickedDate = false;
 
   @override
   State<AddTransaction> createState() => _AddTransactionState();
@@ -62,17 +66,31 @@ class _AddTransactionState extends State<AddTransaction> {
                 ),
                 const Text('پرداختی'),
                 const Spacer(flex: 7),
-                TextButton(onPressed: () {}, child: const Text('تاریخ'))
+                TextButton(onPressed: ()  async {
+                Jalali? picked = await showPersianDatePicker(
+                context: context,
+                initialDate: Jalali.now(),
+                firstDate: Jalali(1385, 8),
+                lastDate: Jalali(1450, 9),
+                );
+                var label = picked?.formatFullDate();
+                setState(() {
+                  AddTransaction.isPickedDate = true;
+                  AddTransaction.setDate = label!;
+                });
+                }, child:  Text(AddTransaction.setDate))
               ],
             ),
             const Spacer(flex: 2),
             MyButton(
+
                 onPressed: () {
+
                   Money item = Money(
                       id:HomeScreen.isEditing?HomeScreen.idEdit: Random().nextInt(9999),
                       title: AddTransaction.titleController.text,
                       price: AddTransaction.priceController.text,
-                      date: '1402/06/08',
+                      date:AddTransaction.setDate,
                       isReceived: AddTransaction.groupId == 1 ? true : false);
 
 

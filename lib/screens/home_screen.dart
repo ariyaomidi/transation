@@ -83,6 +83,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 HomeScreen.idEdit = HomeScreen.money[index].id;
                                 HomeScreen.indexEditing = index;
 
+                                AddTransaction.setDate=
+                                    HomeScreen.money[index].date;
                                 AddTransaction.titleController.text =
                                     HomeScreen.money[index].title;
                                 AddTransaction.priceController.text =
@@ -173,6 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget fab() {
     return FloatingActionButton(
       onPressed: () {
+        AddTransaction.setDate='تنظیم کردن تاریخ';
         HomeScreen.isEditing = false;
         AddTransaction.groupId = 0;
         AddTransaction.priceController.text = '';
