@@ -296,8 +296,8 @@ class MyListTileWidget extends StatelessWidget {
               Row(
                 children: [
 
-                  Text(HomeScreen.money[index].id.toString()),
-                  SizedBox(width: 20,),
+                  // Text(HomeScreen.money[index].id.toString()),
+                  // SizedBox(width: 20,),
 
 
                   Text(
