@@ -35,113 +35,188 @@ class _AddTransactionState extends State<AddTransaction> {
         padding: const EdgeInsets.all(18.0),
         child: Column(
           children: [
-            Row(children: [
-
-              IconButton(onPressed: (){Navigator.pop(context);}, icon:const Icon( Icons.arrow_back),),
-              Spacer(flex: 8,),
-              Text(HomeScreen.isEditing ? 'ویرایش تراکنش ' : 'تراکنش جدید'),
-              Spacer(flex:9,),
-            ],),
-
-            const Spacer(),
-            MyTexField(
-                hintText: 'عنوان',
-                controller: AddTransaction.titleController),
-            const Spacer(),
-            MyTexField(
-                hintText: 'مبلغ',
-                controller: AddTransaction.priceController),
-            Spacer(flex:ScreenSize(context).screenWidth>330 ? 2:1),
-            ScreenSize(context).screenWidth>330 ?
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Spacer(flex: 8),
-                Radio(
-                  activeColor: kPurpleColor,
-                  value: 1,
-                  groupValue: AddTransaction.groupId,
-                  onChanged: (value) {
-                    setState(() => AddTransaction.groupId = value.hashCode);
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
                   },
+                  icon: const Icon(Icons.arrow_back),
                 ),
-                const Text('دریافتی'),
-                const Spacer(flex: 2),
-                Radio(
-                  activeColor: kPurpleColor,
-                  value: 2,
-                  groupValue: AddTransaction.groupId,
-                  onChanged: (value) {
-                    setState(() => AddTransaction.groupId = value.hashCode);
-                  },
+                Spacer(
+                  flex: 8,
                 ),
-                const Text('پرداختی'),
-                const Spacer(flex: 7),
-                TextButton(
-                    onPressed: () async {
-                      Jalali? picked = await showPersianDatePicker(
-                        context: context,
-                        initialDate: Jalali.now(),
-                        firstDate: Jalali(1385, 8),
-                        lastDate: Jalali(1450, 9),
-                      );
-                      var label = picked?.formatFullDate();
-                      setState(() {
-                        AddTransaction.isPickedDate = true;
-                        AddTransaction.setDate = label!;
-                      });
-                    },
-                    child: Text(AddTransaction.setDate))
-              ],
-            ):
-            Column(
-              children: [
-                TextButton(
-                    onPressed: () async {
-                      Jalali? picked = await showPersianDatePicker(
-                        context: context,
-                        initialDate: Jalali.now(),
-                        firstDate: Jalali(1385, 8),
-                        lastDate: Jalali(1450, 9),
-                      );
-                      var label = picked?.formatFullDate();
-                      setState(() {
-                        AddTransaction.isPickedDate = true;
-                        AddTransaction.setDate = label!;
-                      });
-                    },
-                    child: Text(AddTransaction.setDate)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Radio(
-                      activeColor: kPurpleColor,
-                      value: 1,
-                      groupValue: AddTransaction.groupId,
-                      onChanged: (value) {
-                        setState(() => AddTransaction.groupId = value.hashCode);
-                      },
-                    ),
-                    const Text('دریافتی'),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Radio(
-                      activeColor: kPurpleColor,
-                      value: 2,
-                      groupValue: AddTransaction.groupId,
-                      onChanged: (value) {
-                        setState(() => AddTransaction.groupId = value.hashCode);
-                      },
-                    ),
-                    const Text('پرداختی'),
-                  ],
+                Text(HomeScreen.isEditing ? 'ویرایش تراکنش ' : 'تراکنش جدید'),
+                Spacer(
+                  flex: 9,
                 ),
               ],
             ),
-             Spacer(flex: ScreenSize(context).screenWidth>330 ? 2 :1),
+
+            const Spacer(),
+            MyTexField(
+                hintText: 'عنوان', controller: AddTransaction.titleController),
+            const Spacer(),
+            MyTexField(
+                hintText: 'مبلغ', controller: AddTransaction.priceController),
+            Spacer(flex: ScreenSize(context).screenWidth > 330 ? 2 : 1),
+
+            Container(
+              color: Colors.red,
+              width: double.infinity,
+              child: Wrap(
+                textDirection: TextDirection.rtl,
+                // alignment: WrapAlignment.end,
+                runAlignment: WrapAlignment.spaceBetween,
+                direction: Axis.horizontal,
+                children: [
+                Container(
+
+                    color: Colors.green[100],width: 150,
+
+                    child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Radio(
+                          activeColor: kPurpleColor,
+                          value: 1,
+                          groupValue: AddTransaction.groupId,
+                          onChanged: (value) {
+                            setState(() => AddTransaction.groupId = value.hashCode);
+                          },
+                        ),
+                        const Text('دریافتی'),
+                      ],
+                    ),
+                  ),
+
+                  Container(
+                    color: Colors.green[500],width: 150,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Radio(
+                          activeColor: kPurpleColor,
+                          value: 2,
+                          groupValue: AddTransaction.groupId,
+                          onChanged: (value) {
+                            setState(() => AddTransaction.groupId = value.hashCode);
+                          },
+                        ),
+                        const Text('پرداختی'),
+                      ],
+                    ),
+                  ),
+
+                  TextButton(
+                      onPressed: () async {
+                        Jalali? picked = await showPersianDatePicker(
+                          context: context,
+                          initialDate: Jalali.now(),
+                          firstDate: Jalali(1385, 8),
+                          lastDate: Jalali(1450, 9),
+                        );
+                        var label = picked?.formatFullDate();
+                        setState(() {
+                          AddTransaction.isPickedDate = true;
+                          AddTransaction.setDate = label!;
+                        });
+                      },
+                      child: Text(AddTransaction.setDate)),
+                ],
+              ),
+            ),
+
+            // ScreenSize(context).screenWidth>330 ?
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     const Spacer(flex: 8),
+            //     Radio(
+            //       activeColor: kPurpleColor,
+            //       value: 1,
+            //       groupValue: AddTransaction.groupId,
+            //       onChanged: (value) {
+            //         setState(() => AddTransaction.groupId = value.hashCode);
+            //       },
+            //     ),
+            //     const Text('دریافتی'),
+            //     const Spacer(flex: 2),
+            //     Radio(
+            //       activeColor: kPurpleColor,
+            //       value: 2,
+            //       groupValue: AddTransaction.groupId,
+            //       onChanged: (value) {
+            //         setState(() => AddTransaction.groupId = value.hashCode);
+            //       },
+            //     ),
+            //     const Text('پرداختی'),
+            //     const Spacer(flex: 7),
+            //     TextButton(
+            //         onPressed: () async {
+            //           Jalali? picked = await showPersianDatePicker(
+            //             context: context,
+            //             initialDate: Jalali.now(),
+            //             firstDate: Jalali(1385, 8),
+            //             lastDate: Jalali(1450, 9),
+            //           );
+            //           var label = picked?.formatFullDate();
+            //           setState(() {
+            //             AddTransaction.isPickedDate = true;
+            //             AddTransaction.setDate = label!;
+            //           });
+            //         },
+            //         child: Text(AddTransaction.setDate))
+            //   ],
+            // ):
+            // Column(
+            //   children: [
+            //     TextButton(
+            //         onPressed: () async {
+            //           Jalali? picked = await showPersianDatePicker(
+            //             context: context,
+            //             initialDate: Jalali.now(),
+            //             firstDate: Jalali(1385, 8),
+            //             lastDate: Jalali(1450, 9),
+            //           );
+            //           var label = picked?.formatFullDate();
+            //           setState(() {
+            //             AddTransaction.isPickedDate = true;
+            //             AddTransaction.setDate = label!;
+            //           });
+            //         },
+            //         child: Text(AddTransaction.setDate)),
+            //     Row(
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       children: [
+            //         Radio(
+            //           activeColor: kPurpleColor,
+            //           value: 1,
+            //           groupValue: AddTransaction.groupId,
+            //           onChanged: (value) {
+            //             setState(() => AddTransaction.groupId = value.hashCode);
+            //           },
+            //         ),
+            //         const Text('دریافتی'),
+            //       ],
+            //     ),
+            //     Row(
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       children: [
+            //         Radio(
+            //           activeColor: kPurpleColor,
+            //           value: 2,
+            //           groupValue: AddTransaction.groupId,
+            //           onChanged: (value) {
+            //             setState(() => AddTransaction.groupId = value.hashCode);
+            //           },
+            //         ),
+            //         const Text('پرداختی'),
+            //       ],
+            //     ),
+            //   ],
+            // ),
+            Spacer(flex: ScreenSize(context).screenWidth > 330 ? 2 : 1),
             MyButton(
                 onPressed: () {
                   Money item = Money(
@@ -216,11 +291,19 @@ class MyButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: ScreenSize(context).screenWidth>1200 ?  ScreenSize(context).screenWidth*0.03: 36,
+      height: ScreenSize(context).screenWidth > 1200
+          ? ScreenSize(context).screenWidth * 0.03
+          : 36,
       child: ElevatedButton(
         onPressed: onPressed,
         style: TextButton.styleFrom(backgroundColor: kPurpleColor),
-        child: Text(text , style: TextStyle(fontSize: ScreenSize(context).screenWidth>1200 ? ScreenSize(context).screenWidth*0.01: 14),),
+        child: Text(
+          text,
+          style: TextStyle(
+              fontSize: ScreenSize(context).screenWidth > 1200
+                  ? ScreenSize(context).screenWidth * 0.01
+                  : 14),
+        ),
       ),
     );
   }
